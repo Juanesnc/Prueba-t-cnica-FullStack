@@ -41,6 +41,7 @@ const status = ref('');
 const users = ref([]);
 const feedback = ref('');
 
+// eslint-disable-next-line no-unused-vars
 const props = defineProps({
     task: {
         type: Object,
@@ -77,7 +78,6 @@ const updateTask = async (taskId, nameUpdate, responsibleUpdate, statusUpdate) =
         feedback.value = 'Update error'
     } else {
         close();
-        console.log(props);
     }
 }
 

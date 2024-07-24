@@ -4,7 +4,7 @@ const useAuth = defineStore('auth', {
     state: () => {
         return {
             token: localStorage.getItem('token') || null,
-            user: null,
+            user: localStorage.getItem('user') || null,
             baseURL: 'http://127.0.0.1:8000/api/auth'
         }
     },
@@ -66,6 +66,7 @@ const useAuth = defineStore('auth', {
                     return false;
                 } else {
                     this.token = response.token
+                    localStorage.setItem('user', this.user)
                     localStorage.setItem('token', response.token)
                     return true;
                 }
@@ -136,6 +137,7 @@ const useAuth = defineStore('auth', {
                 },
                 body: JSON.stringify({
                     "id": TaskId,
+                    'user_id': this.user,
                     'name': Nombre,
                     'responsible': Responsable,
                     'status': status
@@ -167,6 +169,7 @@ const useAuth = defineStore('auth', {
         },
         logout() {
             this.token = null
+            localStorage.removeItem('token')
         }
     }
 })

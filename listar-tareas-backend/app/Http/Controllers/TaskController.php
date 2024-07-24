@@ -49,10 +49,11 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
         $task = DB::table('tasks')
-        ->where('id', $id)
+        ->where('id', $request->id)
+        ->where('user_id', $request->user_id)
         ->update([
             'name' => $request->name,
             'responsible' => $request->responsible,
