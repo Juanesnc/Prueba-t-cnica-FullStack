@@ -51,9 +51,26 @@ class TaskController extends Controller
      */
     public function update(Request $request)
     {
+        $authorizationHeader = $request->header('Authorization');
+
+        if(!$authorizationHeader){
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $tokenUser = str_replace('Bearer ', '', $authorizationHeader);
+
+        $user = DB::table('users')
+        ->where('id', $request->user_id)
+        ->where('token', $tokenUser)
+        ->first();
+
+        if(!$user){
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+
         $task = DB::table('tasks')
         ->where('id', $request->id)
-        ->where('user_id', $request->user_id)
         ->update([
             'name' => $request->name,
             'responsible' => $request->responsible,

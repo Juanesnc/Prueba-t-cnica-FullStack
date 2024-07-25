@@ -20,7 +20,7 @@ class AuthController extends Controller
             [
                 'name' => 'required',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'required',
+                'password' => 'required'
             ]);
 
             if($validateUser->fails()){
@@ -36,9 +36,13 @@ class AuthController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'token' => ''
             ]);
 
             $token = JWTAuth::fromUser($user);
+
+            $user->token = $token;
+            $user->update(['token' => $token]);
 
             if(!$token) {
                 return response()->json([
@@ -51,7 +55,8 @@ class AuthController extends Controller
             'user' => [
                 'name' => $user->name,
                 'email' => $user->email,
-                'id' => $user->id
+                'id' => $user->id,
+                'token' => $token
             ],
             'token' => $token
         ], 201);
@@ -87,9 +92,11 @@ class AuthController extends Controller
                     'message' => 'Email & Password does not match with our record.',
                 ], 401);
             }
-
             $user = User::where('email', $request->email)->first();
             $token = JWTAuth::fromUser($user);
+
+            $user->token = $token;
+            $user->update(['token' => $token]);
 
             return response()->json([
                 'status' => true,
